@@ -255,9 +255,9 @@ def crossover(leaders: Genome) -> Genome:
 
 	return Genome(
 		leaders.settings,
-		__hybridization_1(leaders.iGenes.copy(), num_individuals, population_size),
-		__hybridization_1(leaders.hGenes.copy(), num_individuals, population_size),
-		__hybridization_1(leaders.oGenes.copy(), num_individuals, population_size)
+		__hybridization(leaders.iGenes.copy(), num_individuals, population_size),
+		__hybridization(leaders.hGenes.copy(), num_individuals, population_size),
+		__hybridization(leaders.oGenes.copy(), num_individuals, population_size)
 	)
 
 def mutation(population: Genome, mu: float = 0.0, sigma: float = 0.5) -> None:
@@ -275,36 +275,8 @@ def mutation(population: Genome, mu: float = 0.0, sigma: float = 0.5) -> None:
 	__mutate(population.iGenes, max_val, mu, sigma)
 	__mutate(population.hGenes, max_val, mu, sigma)
 	__mutate(population.oGenes, max_val, mu, sigma)
-	
-def __hybridization_0(genes: np.ndarray, num_individuals: int, population_size: int, num_parents: int) -> np.ndarray:
-	"""
-	Метод гибридизации двух весовых тензоров
-	**************
-	
-	Parameters
-	----------
-	genes : np.ndarray 
-		массив генов
-	"""
-	if num_individuals > num_parents:
-		pre_prop = np.block([
-			np.random.randint(1, 10, size=(population_size, num_parents), dtype=I_DTYPE),
-			np.zeros((population_size, num_individuals - num_parents), dtype=I_DTYPE)
-		])
 
-		int_prop = np.array(list(map(np.random.permutation, pre_prop))).T
-		prop = (int_prop / int_prop.sum(0)).astype(F_DTYPE)
-
-	elif num_individuals == num_parents:
-		int_prop = np.random.randint(1, 10, size=(population_size, num_parents), dtype=I_DTYPE).T
-		prop = (int_prop / int_prop.sum(0)).astype(F_DTYPE)
-
-	else:
-		raise Exception("кол-во родительских особей превышает кол-во особей в геноме.")
-
-	return np.around(np.rot90(np.tensordot(prop, genes, axes=(0, 1)), 1, axes=(1,0))).astype(I_DTYPE)
-
-def __hybridization_1(genes: np.ndarray, num_individuals: int, population_size: int) -> np.ndarray:
+def __hybridization(genes: np.ndarray, num_individuals: int, population_size: int) -> np.ndarray:
 	"""
 	Метод гибридизации двух весовых тензоров
 	**************
@@ -416,49 +388,3 @@ def load_genome(path: str) -> Genome:
 		hGenes,
 		oGenes,
 	)
-
-
-
-
-
-
-
-
-
-
-
-
-
-# schemes_0 = [
-# 	[
-# 		["h0","h1","h2","h3"],
-# 		["h1","h0","h3","h2"],
-# 		["h2","h3","h0","h1"],
-# 		["h3","h2","h1","h0"],
-# 		["i0","i1","i1","i0"],
-# 		["i1","i0","i0","i1"]
-# 	],
-# 	[
-# 		["o0","o1","o2","o3"],
-# 		["o1","o0","o3","o2"],
-# 		["o2","o3","o0","o1"],
-# 		["o3","o2","o1","o0"]
-# 	]
-# ]
-
-# schemes_2 = [
-# 	[
-# 		["h0","h1","h2","h3","h4","h5","h6","h7"],
-# 		["h1","h0","h3","h2","h5","h4","h7","h6"],
-# 		["h2","h3","h0","h1","h6","h7","h4","h5"],
-# 		["h3","h2","h1","h0","h7","h6","h5","h4"],
-# 		["i0","i1","i1","i0","i2","i3","i3","i2"],
-# 		["i1","i0","i0","i1","i3","i2","i2","i3"]
-# 	],
-# 	[
-# 		["o0","o1","o2","o3"],
-# 		["o1","o0","o3","o2"],
-# 		["o2","o3","o0","o1"],
-# 		["o3","o2","o1","o0"]
-# 	]
-# ]
