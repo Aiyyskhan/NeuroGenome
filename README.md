@@ -1,4 +1,4 @@
-<img src="docs/NeuroGenome_1.png" align="middle" width="1000"/>
+<img src="docs/NeuroGenome_1_1.jpeg" align="middle" width="1000"/>
 
 # NeuroGenome
 
