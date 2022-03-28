@@ -1,0 +1,464 @@
+"""
+**************************************
+
+NeuroGenome v.0.1.0
+
+Created in 20.11.2021
+by Aiyyskhan Alekseev 
+
+https://github.com/Aiyyskhan
+aiyyskhan@gmail.com
+
+License: MIT
+
+**************************************
+"""
+
+__author__ = "Aiyyskhan Alekseev"
+__version__ = "0.1.0"
+
+from typing import List, Dict, Tuple, Any
+from dataclasses import dataclass
+import json
+import numpy as np
+import h5py
+
+I_DTYPE = np.uint8
+F_DTYPE = np.float16
+
+# Пример схемы
+schemes_0 = [
+	[
+		["i0","i1","h0","h1"],
+		["i1","i0","h1","h0"]
+	],
+	[
+		["i2","i3","h2","h3"],
+		["i3","i2","h3","h2"]
+	],
+	[
+		["o0","o1"],
+		["o1","o0"]
+	]
+]
+
+# Пример настроек
+SETTINGS = {
+	"population size": 50,
+	"number of leaders": 5,
+	"number of parents": 2,
+	"select by": "max", # "min"
+	"number of input nodes per gene": 5,
+	"number of hidden nodes per gene": 4,
+	"number of output nodes per gene": 3,
+	"value sequence": [-1.0,-0.75,-0.5,-0.25,0.0,0.25,0.5,0.75,1.0],
+	"schemes": schemes_0,
+}
+
+
+@dataclass
+class Genome:
+	settings: Dict[str, Any]
+	iGenes: np.ndarray
+	hGenes: np.ndarray
+	oGenes: np.ndarray
+
+	@property
+	def population_size(self) -> int:
+		return self.settings["population size"]
+
+	@property
+	def num_leaders(self) -> int:
+		return self.settings["number of leaders"]
+
+	@property
+	def select_dir(self) -> str:
+		return self.settings["select by"]
+
+	@property
+	def value_sequence(self) -> List:
+		return self.settings["value sequence"]
+
+	@property
+	def schemes(self) -> List:
+		return self.settings["schemes"]
+
+	@property
+	def num_individuals(self) -> int:
+		return self.iGenes.shape[1]
+
+	@property
+	def num_neurons(self) -> Tuple[int, int, int]:
+		return self.iGenes.shape[2], self.hGenes.shape[2], self.oGenes.shape[3]
+
+	@property
+	def num_genes(self) -> Tuple[int, int, int]:
+		return self.iGenes.shape[0], self.hGenes.shape[0], self.oGenes.shape[0]
+
+
+def genome_builder(settings: Dict[str, Any]) -> Genome:
+
+	population_size = settings["population size"]
+	num_inputs = settings["number of input nodes per gene"]
+	num_hiddens = settings["number of hidden nodes per gene"]
+	num_outputs = settings["number of output nodes per gene"]
+
+	val = np.array(settings["value sequence"], dtype=F_DTYPE)
+
+	i_set = set()
+	h_set = set()
+	o_set = set()
+
+	for schema in settings["schemes"]:
+		for row in schema:
+			for item in row:
+				if item[0] == 'i':
+					i_set.add(int(item[1]))
+				elif item[0] == 'h':
+					h_set.add(int(item[1]))
+				elif item[0] == 'o':
+					o_set.add(int(item[1]))
+	
+	return Genome(
+		settings,
+		np.random.randint(len(val), size=(len(i_set), population_size, num_inputs, num_hiddens), dtype=I_DTYPE),
+		np.random.randint(len(val), size=(len(h_set), population_size, num_hiddens, num_hiddens), dtype=I_DTYPE),
+		np.random.randint(len(val), size=(len(o_set), population_size, num_hiddens, num_outputs), dtype=I_DTYPE)
+	)
+
+def neuro_builder(genome: Genome) -> List:
+	l0 = []
+	val = np.array(genome.value_sequence, dtype=F_DTYPE)
+	for schema in genome.schemes:
+		l1 = []
+		for row in schema:
+			l2 = []
+			for item in row:
+				if item[0] == 'i':
+					l2.append(val[genome.iGenes[int(item[1])]])
+				elif item[0] == 'h':
+					l2.append(val[genome.hGenes[int(item[1])]])
+				elif item[0] == 'o':
+					l2.append(val[genome.oGenes[int(item[1])]])
+			l1.append(l2)
+		l0.append(np.block(l1))
+
+	return l0
+
+def adding_random_fragment(arr: np.ndarray, axis: int, max_val: int) -> np.ndarray:
+	"""
+	Метод добавления случайного фрагмента в массив
+
+	**************
+
+	Parameters
+	----------
+	arr : np.ndarray
+		целевой массив
+	axis : int
+		ось добавления
+	max_val : int
+		максимальное значение диапазона случайных значений
+	"""
+	size = np.array(arr.shape)
+	size[axis] = 1
+	return np.append(arr, np.random.randint(max_val, size=size), axis)
+
+def fragment_duplication(arr: np.ndarray, axis: int, frag_idx: int) -> np.ndarray:
+	"""
+	Метод дублирования фрагмента массива
+
+	**************
+
+	Parameters
+	----------
+	arr : np.ndarray
+		целевой массив
+	axis : int
+		ось добавления
+	frag_idx : int
+		индекс фрагмента
+	"""
+	if axis == 0: # дублирование гена
+		fragment = arr[frag_idx,:,:,:][None,:,:,:]
+	elif axis == 1: # дублирование особи
+		fragment = arr[:,frag_idx,:,:][:,None,:,:]
+	elif axis == 2: # дублирование строки генов
+		fragment = arr[:,:,frag_idx,:][:,:,None,:]
+	elif axis == 3: # дублирование столбца генов
+		fragment = arr[:,:,:,frag_idx][:,:,:,None]
+		
+	return np.append(arr, fragment, axis)
+
+def add_individual(genome_1: Genome, genome_2: Genome) -> None:
+	"""
+	Метод добавления особи
+
+	**************
+	
+	Parameters
+	----------
+	genome_1 : Genome
+		целевой геном
+	genome_2 : Genome
+		добавляемый геном
+	"""
+	genome_1.iGenes = np.append(genome_1.iGenes, genome_2.iGenes, axis=1)
+	genome_1.hGenes = np.append(genome_1.hGenes, genome_2.hGenes, axis=1)
+	genome_1.oGenes = np.append(genome_1.oGenes, genome_2.oGenes, axis=1)
+
+def selection(population: Genome, results: List[float]) -> Genome:
+	"""
+	Метод отбора
+
+	**************
+	
+	Parameters
+	----------
+	population : Genome
+		геном популяции
+	results : List[float]
+		список с результатами (вознаграждениями) по каждой особи
+	num_leaders : int
+		количество необходимых лидеров
+	max_first : bool
+		направление сортировки: по умолчанию True - особь с максимальным результатом окажется первым
+	"""
+
+	# сортировка и отбор лидеров по результатам
+	select_dir = population.select_dir
+	num_leaders = population.num_leaders
+	if select_dir == "max":
+		leader_indices = np.argsort(np.array(results))[::-1][:num_leaders]
+	else:
+		leader_indices = np.argsort(np.array(results))[:num_leaders]
+
+	return Genome(
+		population.settings,
+		population.iGenes[:, leader_indices].copy(),
+		population.hGenes[:, leader_indices].copy(),
+		population.oGenes[:, leader_indices].copy()
+	)
+
+def crossover(leaders: Genome) -> Genome:
+	"""
+	Метод кроссинговера
+	**************
+	
+	Parameters
+	----------
+	leaders : Genome
+		геном лидеров
+	"""
+	num_individuals = leaders.num_individuals
+	population_size = leaders.population_size
+
+	return Genome(
+		leaders.settings,
+		__hybridization_1(leaders.iGenes.copy(), num_individuals, population_size),
+		__hybridization_1(leaders.hGenes.copy(), num_individuals, population_size),
+		__hybridization_1(leaders.oGenes.copy(), num_individuals, population_size)
+	)
+
+def mutation(population: Genome, mu: float = 0.0, sigma: float = 0.5) -> None:
+	"""
+	Метод мутации
+	**************
+	
+	Parameters
+	----------
+	population : Genome
+		популяция
+	"""
+	max_val = len(population.settings["value sequence"]) - 1
+	
+	__mutate(population.iGenes, max_val, mu, sigma)
+	__mutate(population.hGenes, max_val, mu, sigma)
+	__mutate(population.oGenes, max_val, mu, sigma)
+	
+def __hybridization_0(genes: np.ndarray, num_individuals: int, population_size: int, num_parents: int) -> np.ndarray:
+	"""
+	Метод гибридизации двух весовых тензоров
+	**************
+	
+	Parameters
+	----------
+	genes : np.ndarray 
+		массив генов
+	"""
+	if num_individuals > num_parents:
+		pre_prop = np.block([
+			np.random.randint(1, 10, size=(population_size, num_parents), dtype=I_DTYPE),
+			np.zeros((population_size, num_individuals - num_parents), dtype=I_DTYPE)
+		])
+
+		int_prop = np.array(list(map(np.random.permutation, pre_prop))).T
+		prop = (int_prop / int_prop.sum(0)).astype(F_DTYPE)
+
+	elif num_individuals == num_parents:
+		int_prop = np.random.randint(1, 10, size=(population_size, num_parents), dtype=I_DTYPE).T
+		prop = (int_prop / int_prop.sum(0)).astype(F_DTYPE)
+
+	else:
+		raise Exception("кол-во родительских особей превышает кол-во особей в геноме.")
+
+	return np.around(np.rot90(np.tensordot(prop, genes, axes=(0, 1)), 1, axes=(1,0))).astype(I_DTYPE)
+
+def __hybridization_1(genes: np.ndarray, num_individuals: int, population_size: int) -> np.ndarray:
+	"""
+	Метод гибридизации двух весовых тензоров
+	**************
+	
+	Parameters
+	----------
+	genes : np.ndarray 
+		массив генов
+	"""
+	# создание дочернего тензора
+	child_genes = np.zeros((genes.shape[0], population_size, genes.shape[2], genes.shape[3]), dtype=np.uint8)
+
+	a = np.linspace(0.2, 1.0, num=num_individuals)[::-1]
+	b = a/a.sum()
+	parents_indices = np.random.choice(num_individuals, population_size, p=b)
+
+	individuals_indices = np.arange(num_individuals)
+
+	for idx_ch, idx_p0 in enumerate(parents_indices):
+		idx_p1 = individuals_indices[individuals_indices != idx_p0][np.random.randint(num_individuals-1)]
+		mask = np.random.randint(2, size=(genes.shape[2], genes.shape[3])).astype(np.uint8)
+
+		child_genes[:, idx_ch] = genes[:, idx_p0] * mask + genes[:, idx_p1] * (mask ^ 1)
+
+	# возвращаем дочерний тензор
+	return child_genes
+
+def __mutate(genes: np.ndarray, max_val: int, mu: float, sigma: float) -> None:
+	"""
+	Метод мутационной модификации весовых тензоров
+	**************
+	
+	Parameters
+	----------
+	genes : np.ndarray 
+		массив генов
+	max_val : int
+		максимальное значение
+	mu : float
+		медиана нормального распределения
+	sigma : float
+		стандартное отклонение нормального распределения
+	"""
+
+	num_individuals = genes.shape[1]
+
+	for gene in genes:
+		selected_individuals = np.random.randint(num_individuals, size=np.random.randint(1, num_individuals))
+		gene_selected_individuals = gene[selected_individuals].copy()
+		mutation_value = np.random.normal(mu, sigma, gene_selected_individuals.shape)
+		gene[selected_individuals] = np.clip(np.around(gene_selected_individuals + mutation_value), 0, max_val).astype(I_DTYPE)
+
+def save_genome(path: str, genome: Genome) -> None:
+	""" 
+	Метод сохранения генома
+	**************
+	
+	Parameters
+	----------
+	path : str
+		относительный путь
+	genome : Genome
+		сохраняемый геном
+	"""
+	if ".hdf5" in path:
+		with h5py.File(path, 'w') as f:
+			f.attrs["settings"] = json.dumps(genome.settings)
+			_ = f.create_dataset("iGenes", data=genome.iGenes)
+			_ = f.create_dataset("hGenes", data=genome.hGenes)
+			_ = f.create_dataset("oGenes", data=genome.oGenes)
+	# elif ".npy" in path:
+	# 	with open(path, 'wb') as f:
+	# 		np.save(f, genome.val)
+	# 		np.save(f, genome.iGenes)
+	# 		np.save(f, genome.hGenes)
+	# 		np.save(f, genome.oGenes)
+	else:
+		raise Exception("Неподдерживаемый тип файла")
+
+def load_genome(path: str) -> Genome:
+	"""
+	Метод загрузки генома
+	**************
+	
+	Parameters
+	----------
+	path : str
+		относительный путь
+	"""
+	if ".hdf5" in path:
+		settings = dict()
+		with h5py.File(path, 'r') as f:
+			settings = json.loads(f.attrs["settings"])
+			iGenes = np.array(f["iGenes"])
+			hGenes = np.array(f["hGenes"])
+			oGenes = np.array(f["oGenes"])
+	# elif ".npy" in path:
+	# 	with open(path, 'rb') as f:
+	# 		val = np.load(f, allow_pickle=True)
+	# 		iGenes = np.load(f, allow_pickle=True)
+	# 		hGenes = np.load(f, allow_pickle=True)
+	# 		oGenes = np.load(f, allow_pickle=True)
+	else:
+		raise Exception("Неподдерживаемый тип файла")
+
+	return Genome(
+		settings,
+		iGenes,
+		hGenes,
+		oGenes,
+	)
+
+
+
+
+
+
+
+
+
+
+
+
+
+# schemes_0 = [
+# 	[
+# 		["h0","h1","h2","h3"],
+# 		["h1","h0","h3","h2"],
+# 		["h2","h3","h0","h1"],
+# 		["h3","h2","h1","h0"],
+# 		["i0","i1","i1","i0"],
+# 		["i1","i0","i0","i1"]
+# 	],
+# 	[
+# 		["o0","o1","o2","o3"],
+# 		["o1","o0","o3","o2"],
+# 		["o2","o3","o0","o1"],
+# 		["o3","o2","o1","o0"]
+# 	]
+# ]
+
+# schemes_2 = [
+# 	[
+# 		["h0","h1","h2","h3","h4","h5","h6","h7"],
+# 		["h1","h0","h3","h2","h5","h4","h7","h6"],
+# 		["h2","h3","h0","h1","h6","h7","h4","h5"],
+# 		["h3","h2","h1","h0","h7","h6","h5","h4"],
+# 		["i0","i1","i1","i0","i2","i3","i3","i2"],
+# 		["i1","i0","i0","i1","i3","i2","i2","i3"]
+# 	],
+# 	[
+# 		["o0","o1","o2","o3"],
+# 		["o1","o0","o3","o2"],
+# 		["o2","o3","o0","o1"],
+# 		["o3","o2","o1","o0"]
+# 	]
+# ]
