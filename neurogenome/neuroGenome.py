@@ -55,7 +55,7 @@ SETTINGS = {
 	"schemes": schemes_0,
 }
 
-
+# структура генома
 @dataclass
 class Genome:
 	settings: Dict[str, Any]
@@ -95,7 +95,8 @@ class Genome:
 	def num_genes(self) -> Tuple[int, int, int]:
 		return self.iGenes.shape[0], self.hGenes.shape[0], self.oGenes.shape[0]
 
-
+# методы-сборщики
+# сборщик генома
 def genome_builder(settings: Dict[str, Any]) -> Genome:
 
 	population_size = settings["population size"]
@@ -126,6 +127,7 @@ def genome_builder(settings: Dict[str, Any]) -> Genome:
 		np.random.randint(len(val), size=(len(o_set), population_size, num_hiddens, num_outputs), dtype=I_DTYPE)
 	)
 
+# сборщик нейросетевых матриц из генома
 def neuro_builder(genome: Genome) -> List:
 	l0 = []
 	val = np.array(genome.value_sequence, dtype=F_DTYPE)
@@ -145,6 +147,7 @@ def neuro_builder(genome: Genome) -> List:
 
 	return l0
 
+# методы модификации массивов генома
 def adding_random_fragment(arr: np.ndarray, axis: int, max_val: int) -> np.ndarray:
 	"""
 	Метод добавления случайного фрагмента в массив
@@ -207,6 +210,8 @@ def add_individual(genome_1: Genome, genome_2: Genome) -> None:
 	genome_1.hGenes = np.append(genome_1.hGenes, genome_2.hGenes, axis=1)
 	genome_1.oGenes = np.append(genome_1.oGenes, genome_2.oGenes, axis=1)
 
+# эволюционные методы
+# метод отбора
 def selection(population: Genome, results: List[float]) -> Genome:
 	"""
 	Метод отбора
@@ -240,6 +245,7 @@ def selection(population: Genome, results: List[float]) -> Genome:
 		population.oGenes[:, leader_indices].copy()
 	)
 
+# метод скрещивания
 def crossover(leaders: Genome) -> Genome:
 	"""
 	Метод кроссинговера
@@ -260,6 +266,7 @@ def crossover(leaders: Genome) -> Genome:
 		__hybridization(leaders.oGenes.copy(), num_individuals, population_size)
 	)
 
+# метод мутации
 def mutation(population: Genome, mu: float = 0.0, sigma: float = 0.5) -> None:
 	"""
 	Метод мутации
@@ -329,6 +336,7 @@ def __mutate(genes: np.ndarray, max_val: int, mu: float, sigma: float) -> None:
 		mutation_value = np.random.normal(mu, sigma, gene_selected_individuals.shape)
 		gene[selected_individuals] = np.clip(np.around(gene_selected_individuals + mutation_value), 0, max_val).astype(I_DTYPE)
 
+# методы сохранения и загрузки геномов
 def save_genome(path: str, genome: Genome) -> None:
 	""" 
 	Метод сохранения генома
