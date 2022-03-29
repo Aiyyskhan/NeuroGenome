@@ -1,7 +1,7 @@
 <img src="docs/NeuroGenome_1_3.jpeg" align="middle" width="1000"/>
 
 <p align="center">
-<img src="https://img.shields.io/badge/release-v0.1.0-blue">
+<img src="https://img.shields.io/badge/version-0.1.0-blue">
 <img src="https://img.shields.io/badge/license-MIT-green">
 <!-- <img src="https://img.shields.io/badge/python->=3.7-blue"> -->
 </p>
