@@ -1,31 +1,23 @@
 <img src="docs/NeuroGenome_1_3.jpeg" align="middle" width="1000"/>
 
 <p align="center">
-<img src="https://img.shields.io/badge/version-v0.1.0-blue">
-<img src="https://img.shields.io/badge/license-MIT-green">
+<img src="https://img.shields.io/badge/version-v0.1.0-blue.svg?style=flat&colorA=007D8A&colorB=E1523D">
+<img src="https://img.shields.io/badge/license-MIT-brightgreen">
 </p>
 
 **NeuroGenome** is a bioinspired open-source project that allows you to create artificial neural networks with a genetic code.
 
-- [More About NeuroGenome](#more-about-neurogenome)
-- [Installation](#installation)
-- [Getting Started](#getting-started)
-- [License](#license)
-
-## More About NeuroGenome
-
-qweqwrwewer
+<!-- - [Installation](#installation)
+- [Example](#example)
+- [License](#license) -->
 
 ## Installation
-- qowkdmqowkdmoqkd
-	- oimoqiwmdoiwd
-- ksackmdoiqmwd
-	- iwjndiqwujdijdw
 
-## Getting Started
+`pip install neurogenome`
 
-nqiwudniqwudiquwdh
-qiwdbiqwbdiuqwbdiuqbwd
+## Example
+
+_in the pipeline_
 
 ## License
 
