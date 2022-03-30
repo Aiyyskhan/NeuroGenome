@@ -20,7 +20,7 @@ pip install neurogenome
 
 ```python
 # gene localization scheme
-scheme_0 = [
+schema_0 = [
 	[
 		["i0","i1","h0","h1"],
 		["i1","i0","h1","h0"]
@@ -45,7 +45,7 @@ SETTINGS = {
 	"number of hidden nodes per gene": 4,
 	"number of output nodes per gene": 3,
 	"value sequence": [-1.0,-0.75,-0.5,-0.25,0.0,0.25,0.5,0.75,1.0],
-	"schemes": scheme_0,
+	"schema": schema_0,
 }
 ```
 

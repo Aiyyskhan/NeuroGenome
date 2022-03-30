@@ -27,7 +27,7 @@ I_DTYPE = np.uint8
 F_DTYPE = np.float16
 
 # Пример схемы
-scheme_0 = [
+schema_0 = [
 	[
 		["i0","i1","h0","h1"],
 		["i1","i0","h1","h0"]
@@ -52,7 +52,7 @@ SETTINGS = {
 	"number of hidden nodes per gene": 4,
 	"number of output nodes per gene": 3,
 	"value sequence": [-1.0,-0.75,-0.5,-0.25,0.0,0.25,0.5,0.75,1.0],
-	"schemes": scheme_0,
+	"schema": schema_0,
 }
 
 # структура генома
@@ -80,8 +80,8 @@ class Genome:
 		return self.settings["value sequence"]
 
 	@property
-	def schemes(self) -> List:
-		return self.settings["schemes"]
+	def schema(self) -> List:
+		return self.settings["schema"]
 
 	@property
 	def num_individuals(self) -> int:
@@ -110,8 +110,8 @@ def genome_builder(settings: Dict[str, Any]) -> Genome:
 	h_set = set()
 	o_set = set()
 
-	for schema in settings["schemes"]:
-		for row in schema:
+	for layer in settings["schema"]:
+		for row in layer:
 			for item in row:
 				if item[0] == 'i':
 					i_set.add(int(item[1]))
@@ -131,9 +131,9 @@ def genome_builder(settings: Dict[str, Any]) -> Genome:
 def neuro_builder(genome: Genome) -> List:
 	l0 = []
 	val = np.array(genome.value_sequence, dtype=F_DTYPE)
-	for schema in genome.schemes:
+	for layer in genome.schema:
 		l1 = []
-		for row in schema:
+		for row in layer:
 			l2 = []
 			for item in row:
 				if item[0] == 'i':
