@@ -39,7 +39,6 @@ schema_0 = [
 SETTINGS = {
 	"population size": 50,
 	"number of leaders": 5,
-	"number of parents": 2,
 	"select by": "max",
 	"number of input nodes per gene": 5,
 	"number of hidden nodes per gene": 4,

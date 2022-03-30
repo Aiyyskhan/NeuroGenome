@@ -26,7 +26,7 @@ import h5py
 I_DTYPE = np.uint8
 F_DTYPE = np.float16
 
-# Пример схемы
+# example of gene localization scheme
 schema_0 = [
 	[
 		["i0","i1","h0","h1"],
@@ -42,11 +42,10 @@ schema_0 = [
 	]
 ]
 
-# Пример настроек
+# example of hyperparameters
 SETTINGS = {
 	"population size": 50,
 	"number of leaders": 5,
-	"number of parents": 2,
 	"select by": "max", # "min"
 	"number of input nodes per gene": 5,
 	"number of hidden nodes per gene": 4,
