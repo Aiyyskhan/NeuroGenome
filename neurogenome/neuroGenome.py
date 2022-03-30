@@ -103,27 +103,26 @@ def genome_builder(settings: Dict[str, Any]) -> Genome:
 	num_hiddens = settings["number of hidden nodes per gene"]
 	num_outputs = settings["number of output nodes per gene"]
 
-	val = np.array(settings["value sequence"], dtype=F_DTYPE)
+	val_len = len(settings["value sequence"])
 
-	i_set = set()
-	h_set = set()
-	o_set = set()
+	i_count = 0
+	h_count = 0
+	o_count = 0
 
 	for layer in settings["schema"]:
-		for row in layer:
-			for item in row:
-				if item[0] == 'i':
-					i_set.add(int(item[1]))
-				elif item[0] == 'h':
-					h_set.add(int(item[1]))
-				elif item[0] == 'o':
-					o_set.add(int(item[1]))
+		for item in np.unique(layer):
+			if item[0] == 'i':
+				i_count += 1
+			elif item[0] == 'h':
+				h_count += 1
+			elif item[0] == 'o':
+				o_count += 1
 	
 	return Genome(
 		settings,
-		np.random.randint(len(val), size=(len(i_set), population_size, num_inputs, num_hiddens), dtype=I_DTYPE),
-		np.random.randint(len(val), size=(len(h_set), population_size, num_hiddens, num_hiddens), dtype=I_DTYPE),
-		np.random.randint(len(val), size=(len(o_set), population_size, num_hiddens, num_outputs), dtype=I_DTYPE)
+		np.random.randint(val_len, size=(i_count, population_size, num_inputs, num_hiddens), dtype=I_DTYPE),
+		np.random.randint(val_len, size=(h_count, population_size, num_hiddens, num_hiddens), dtype=I_DTYPE),
+		np.random.randint(val_len, size=(o_count, population_size, num_hiddens, num_outputs), dtype=I_DTYPE)
 	)
 
 # сборщик нейросетевых матриц из генома
