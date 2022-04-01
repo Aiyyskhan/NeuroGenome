@@ -1,11 +1,10 @@
-from gettext import install
-from importlib_metadata import version
 from setuptools import setup, find_packages
 
 with open("README.md", 'r') as readme_file:
 	readme = readme_file.read()
 
-requirements = ["numpy>=1.18.0", "h5py==2.10"]
+with open("requirements.txt", 'r') as requirements_file:
+	requirements = requirements_file.read().split("\n")
 
 setup(
 	name="neurogenome",

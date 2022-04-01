@@ -105,31 +105,31 @@ def genome_builder(settings: Dict[str, Any]) -> Genome:
 
 	val_len = len(settings["value sequence"])
 
-	i_count = 0
-	h_count = 0
-	o_count = 0
+	i_gene_count = 0
+	h_gene_count = 0
+	o_gene_count = 0
 
 	for layer in settings["schema"]:
 		for item in np.unique(layer):
 			if item[0] == 'i':
-				i_count += 1
+				i_gene_count += 1
 			elif item[0] == 'h':
-				h_count += 1
+				h_gene_count += 1
 			elif item[0] == 'o':
-				o_count += 1
+				o_gene_count += 1
 	
 	return Genome(
 		settings,
-		np.random.randint(val_len, size=(i_count, population_size, num_inputs, num_hiddens), dtype=I_DTYPE),
-		np.random.randint(val_len, size=(h_count, population_size, num_hiddens, num_hiddens), dtype=I_DTYPE),
-		np.random.randint(val_len, size=(o_count, population_size, num_hiddens, num_outputs), dtype=I_DTYPE)
+		np.random.randint(val_len, size=(i_gene_count, population_size, num_inputs, num_hiddens), dtype=I_DTYPE),
+		np.random.randint(val_len, size=(h_gene_count, population_size, num_hiddens, num_hiddens), dtype=I_DTYPE),
+		np.random.randint(val_len, size=(o_gene_count, population_size, num_hiddens, num_outputs), dtype=I_DTYPE)
 	)
 
 # сборщик нейросетевых матриц из генома
 def neuro_builder(genome: Genome) -> List:
 	l0 = []
 	val = np.array(genome.value_sequence, dtype=F_DTYPE)
-	for layer in genome.schema:
+	for layer in genome.schema: 
 		l1 = []
 		for row in layer:
 			l2 = []
@@ -144,6 +144,11 @@ def neuro_builder(genome: Genome) -> List:
 		l0.append(np.block(l1))
 
 	return l0
+
+# метод добавления генов
+def adding_genes(genome: Genome, num_genes: int, select_method: str = "r"):
+	
+	pass
 
 # методы модификации массивов генома
 def adding_random_fragment(arr: np.ndarray, axis: int, max_val: int) -> np.ndarray:
@@ -191,9 +196,9 @@ def fragment_duplication(arr: np.ndarray, axis: int, frag_idx: int) -> np.ndarra
 		
 	return np.append(arr, fragment, axis)
 
-def add_individual(genome_1: Genome, genome_2: Genome) -> None:
+def genomes_concatenation(genome_1: Genome, genome_2: Genome) -> None:
 	"""
-	Метод добавления особи
+	Метод конкатенации двух геномов
 
 	**************
 	
