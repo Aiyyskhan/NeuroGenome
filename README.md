@@ -22,12 +22,12 @@ pip install neurogenome
 # gene localization scheme
 schema_0 = [
 	[
-		["i0","i1","h0","h1"],
-		["i1","i0","h1","h0"]
+		["i0","i1","i0","i1"],
+		["h1","h0","h1","h0"]
 	],
 	[
-		["i2","i3","h2","h3"],
-		["i3","i2","h3","h2"]
+		["i2","i3","i2","i3"],
+		["h3","h2","h3","h2"]
 	],
 	[
 		["o0","o1"],

@@ -29,12 +29,12 @@ F_DTYPE = np.float16
 # example of gene localization scheme
 schema_0 = [
 	[
-		["i0","i1","h0","h1"],
-		["i1","i0","h1","h0"]
+		["i0","i1","i0","i1"],
+		["h1","h0","h1","h0"]
 	],
 	[
-		["i2","i3","h2","h3"],
-		["i3","i2","h3","h2"]
+		["i2","i3","i2","i3"],
+		["h3","h2","h3","h2"]
 	],
 	[
 		["o0","o1"],
@@ -75,11 +75,11 @@ class Genome:
 		return self.settings["select by"]
 
 	@property
-	def value_sequence(self) -> List:
+	def value_sequence(self) -> List[int]:
 		return self.settings["value sequence"]
 
 	@property
-	def schema(self) -> List:
+	def schema(self) -> List[List[str]]:
 		return self.settings["schema"]
 
 	@property
@@ -87,11 +87,11 @@ class Genome:
 		return self.iGenes.shape[1]
 
 	@property
-	def num_neurons(self) -> Tuple[int, int, int]:
+	def num_neurons(self) -> Tuple[int, ...]:
 		return self.iGenes.shape[2], self.hGenes.shape[2], self.oGenes.shape[3]
 
 	@property
-	def num_genes(self) -> Tuple[int, int, int]:
+	def num_genes(self) -> Tuple[int, ...]:
 		return self.iGenes.shape[0], self.hGenes.shape[0], self.oGenes.shape[0]
 
 # методы-сборщики
