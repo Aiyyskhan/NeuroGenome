@@ -1,4 +1,4 @@
-<img src="docs/NeuroGenome_1_1_white.jpeg" align="middle" width="1000"/>
+<img src="https://raw.githubusercontent.com/Aiyyskhan/NeuroGenome/main/docs/NeuroGenome_1_1_white.jpeg" align="middle" width="1000"/>
 
 <p align="center">
 <img src="https://img.shields.io/badge/version-v0.1.1-blue.svg?style=flat&colorA=007D8A&colorB=E1523D">

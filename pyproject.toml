@@ -5,6 +5,7 @@ description = "A universal API for create artificial neural networks with a gene
 authors = ["Aiyyskhan Alekseev <aiyykhan@gmail.com>"]
 license = "MIT"
 readme = "README.md"
+repository = "https://github.com/Aiyyskhan/NeuroGenome"
 
 [tool.poetry.dependencies]
 python = "^3.7"
