@@ -5,7 +5,16 @@ from neurogenome.genome import Genome, I_DTYPE, F_DTYPE, MAIN_VALUE_SEQUENCE
 
 
 def genome_builder(settings: Dict[str, Any]) -> Genome:
+	"""
+	Метод-сборщик генома
 
+	**************
+	
+	Parameters
+	----------
+	settings : Dict[str, Any]
+		словарь с основными настройками (гиперпараметрами)
+	"""
 	population_size = settings["population size"]
 	num_inputs = settings["number of input nodes per gene"]
 	num_hiddens = settings["number of hidden nodes per gene"]
@@ -34,8 +43,17 @@ def genome_builder(settings: Dict[str, Any]) -> Genome:
 		np.random.randint(val_len, size=(o_gene_count, population_size, num_hiddens, num_outputs), dtype=I_DTYPE)
 	)
 
-# сборщик нейросетевых матриц из генома
 def neuro_builder(genome: Genome) -> List:
+	"""
+	Метод-сборщик нейросетевых матриц из генома
+
+	**************
+	
+	Parameters
+	----------
+	genome : Genome
+		геном
+	"""
 	l0 = []
 	vals = genome.value_sequence
 	for layer in genome.schema: 

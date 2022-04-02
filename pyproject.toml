@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "neurogenome"
-version = "0.1.0"
+version = "0.1.1"
 description = "A universal API for create artificial neural networks with a genetic code."
 authors = ["Aiyyskhan Alekseev <aiyykhan@gmail.com>"]
 license = "MIT"
