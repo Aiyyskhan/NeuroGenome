@@ -4,7 +4,7 @@ import numpy as np
 from neurogenome.genome import Genome
 
 
-def genome_remake(genome: Genome, new_schema: List[List[str]], mode: str = "r"):
+def adding_new_genes(genome: Genome, new_schema: List[List[str]], mode: str = "r"):
 	"""
 	Метод добавления генов по новой схеме
 
@@ -18,9 +18,9 @@ def genome_remake(genome: Genome, new_schema: List[List[str]], mode: str = "r"):
 		новая схема с дополнительным набором генов
 	mode : str
 		режим добавления генов:
-		r - случайный выбор способа генерации генов (создание нового гена или дублирование существующего)
-		d - дублирование существующего гена
-		a - создание нового гена
+			r - случайный выбор способа генерации генов (создание нового гена или дублирование существующего)
+			d - дублирование существующего гена
+			a - создание нового гена
 	"""
 	i_gene_old_count, h_gene_old_count, o_gene_old_count = genome.num_genes
 
