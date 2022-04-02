@@ -29,12 +29,12 @@ F_DTYPE = np.float16
 # example of gene localization scheme
 schema_0 = [
 	[
-		["i0","i1","h0","h1"],
-		["i1","i0","h1","h0"]
+		["i0","i1","i0","i1"],
+		["h1","h0","h1","h0"]
 	],
 	[
-		["i2","i3","h2","h3"],
-		["i3","i2","h3","h2"]
+		["i2","i3","i2","i3"],
+		["h3","h2","h3","h2"]
 	],
 	[
 		["o0","o1"],
@@ -144,11 +144,6 @@ def neuro_builder(genome: Genome) -> List:
 		l0.append(np.block(l1))
 
 	return l0
-
-# метод добавления генов
-def adding_genes(genome: Genome, num_genes: int, select_method: str = "r"):
-	
-	pass
 
 # методы модификации массивов генома
 def adding_random_fragment(arr: np.ndarray, axis: int, max_val: int) -> np.ndarray:
