@@ -43,7 +43,6 @@ SETTINGS = {
 	"number of input nodes per gene": 5,
 	"number of hidden nodes per gene": 4,
 	"number of output nodes per gene": 3,
-	"value sequence": [-1.0,-0.75,-0.5,-0.25,0.0,0.25,0.5,0.75,1.0],
 	"schema": schema_0,
 }
 ```
