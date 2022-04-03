@@ -9,7 +9,7 @@ repository = "https://github.com/Aiyyskhan/NeuroGenome"
 
 [tool.poetry.dependencies]
 python = "^3.7"
-numpy = "1.18.1"
+numpy = "1.21.0"
 h5py = "2.10"
 
 [tool.poetry.dev-dependencies]
