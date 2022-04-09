@@ -9,7 +9,7 @@ xor_inputs = [
 	[1.0, 0.0], 
 	[1.0, 1.0]
 ]
-xor_outputs = [
+xor_targets = [
 	0.0, 
 	1.0, 
 	1.0, 
@@ -19,39 +19,15 @@ xor_outputs = [
 # gene localization scheme
 schema_0 = [
 	[
-		["i0", "i1", "i2", "i3"]
+		["i0"]
 	],
 	[
-		["h0", "h1", "h2", "h12"],
-		["h3", "h4", "h5", "h13"],
-		["h6", "h7", "h8", "h14"],
-		["h9", "h10", "h11", "h15"]
+		["h0"]
 	],
 	[
-		["o0"],
-		["o1"],
-		["o2"],
-		["o3"]
+		["o0"]
 	]
 ]
-
-# schema_1 = [
-# 	[
-# 		["i0", "i1", "i2", "i3", "i4"]
-# 	],
-# 	[
-# 		["h0", "h1", "h2"],
-# 		["h3", "h4", "h5"],
-# 		["h6", "h7", "h8"],
-# 		["h9", "h10", "h11"],
-# 		["h12", "h13", "h14"]
-# 	],
-# 	[
-# 		["o0"],
-# 		["o1"],
-# 		["o2"]
-# 	]
-# ]
 
 # hyperparameters
 SETTINGS = {
@@ -64,10 +40,11 @@ SETTINGS = {
 	"schema": schema_0,
 }
 
-VAL_SEQ = [-1.0,-0.9,-0.8,-0.7,-0.6,-0.5,-0.4,-0.3,-0.2,-0.1,0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]
+VAL_SEQ = [-3.0,-2.5,-2.0,-1.5,-1.0,-0.5,0.0,0.5,1.0,1.5,2.0,2.5,3.0]
+# VAL_SEQ = [-3.0,-2.0,-1.0,0.0,1.0,2.0,3.0]
 
-MAX_EPOCH = 1000
-SUCCESS = 0.001
+MAX_EPOCH = 500
+# SUCCESS = 0.001
 
 genome = ng.builders.genome_builder(SETTINGS, VAL_SEQ)
 
@@ -87,14 +64,13 @@ for gen in range(MAX_EPOCH):
 
 	resp = nn(in_data, w_matrix_list)
 
-	err_arr = np.sum(((np.array(xor_outputs)[:,None] - resp)**2), axis=1).ravel()
+	err_arr = np.sum(((np.array(xor_targets)[:,None] - resp)**2), axis=1).ravel()
 
 	if gen % 10 == 0:
 		print(f"Gen: {gen} - Best result {err_arr.min()}")
-		# print(f"iGenes[0, 0]: \n{genome.iGenes[0, 0]}")
 
-	if err_arr.min() <= SUCCESS:
-		break
+	# if err_arr.min() <= SUCCESS:
+	# 	break
 
 	lead_genome = ng.evolution.selection(genome, err_arr)
 	genome = ng.evolution.crossover(lead_genome)
