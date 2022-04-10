@@ -67,6 +67,8 @@ genome = ng.builders.genome_builder(SETTINGS, VAL_SEQ)
 # generation of weight matrices from the genome
 w_matrix_list = ng.builders.neuro_builder(genome)
 
+print("\n*** Evolution started ***\n")
+
 # evolution loop
 for gen in range(MAX_EPOCH):
 	# add axis
@@ -92,18 +94,22 @@ for gen in range(MAX_EPOCH):
 	# generation of weight matrices from a new genome
 	w_matrix_list = ng.builders.neuro_builder(genome)
 
-print("\nTrain end")
+print("\n*** Evolution is finished ***")
+print("\n-----------------------------")
+print("\n*** Testing started ***\n")
 
+# extract the champion genome
 champion_index = np.argsort(np.array(err_arr))[0]
-
 champ_w = [tensor[champion_index] for tensor in w_matrix_list]
 
 while True:
-	test_arr = input("Enter test data (or 'stop'): ")
+	test_arr = input("Enter data (example: 1 1) or 'stop' to exit: ")
 	if test_arr == "stop":
 		break
-	
-	resp = nn(np.array(test_arr.split()).astype("float"), champ_w)
-	print(f"Response: {resp}")
+	try:
+		resp = nn(np.array(test_arr.split()).astype("float"), champ_w)
+		print(f"Response: {resp}")
+	except:
+		print("Entered incorrect data")
 
 
