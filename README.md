@@ -6,6 +6,8 @@
 </p>
 
 **NeuroGenome** is a bioinspired open-source project that allows you to create artificial neural networks with a genetic code.
+The neurogenome allows decomposing the problem of optimization of neural networks by evolutionary algorithms.
+Neurogenome genes, like real genes in biological organisms, can mutate, recombine in a crossover process, and be transmitted to new generations.
 
 - [Installation](#installation)
 - [Example scheme and settings](#example-scheme-and-settings)
