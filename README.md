@@ -8,7 +8,7 @@
 **NeuroGenome** is a bioinspired open-source project that allows you to create artificial neural networks with a genetic code.
 
 - [Installation](#installation)
-- [Settings example](#settings-example)
+- [Example scheme and settings](#example-scheme-and-settings)
 - [Examples](#examples)
 - [License](#license)
 
@@ -16,7 +16,8 @@
 ```python
 pip install neurogenome
 ```
-## Example of a circuit and settings
+
+## Example scheme and settings
 
 ```python
 # gene localization scheme
