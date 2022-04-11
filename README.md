@@ -16,7 +16,7 @@
 ```python
 pip install neurogenome
 ```
-## Settings example
+## Example of a circuit and settings
 
 ```python
 # gene localization scheme
