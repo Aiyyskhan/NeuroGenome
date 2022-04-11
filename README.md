@@ -61,7 +61,6 @@ _in the pipeline_
 | [Schema and settings](https://github.com/Aiyyskhan/NeuroGenome/blob/main/examples/schema_settings.py)| Example of a gene layout for weight matrix assembly | - |
 | [XOR](https://github.com/Aiyyskhan/NeuroGenome/blob/main/examples/xor.py)	| Example with a standard XOR task	| - |
 
-
 ## License
 
 [MIT](https://opensource.org/licenses/MIT)
