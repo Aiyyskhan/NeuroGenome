@@ -120,7 +120,6 @@ def genomes_concatenation(genome_1: Genome, genome_2: Genome) -> None:
 	genome_1.hGenes = np.append(genome_1.hGenes, genome_2.hGenes, axis=1)
 	genome_1.oGenes = np.append(genome_1.oGenes, genome_2.oGenes, axis=1)
 
-
 def __mode_handler(genes: np.ndarray, mode: str, max_val: int, gene_old_count: int) -> np.ndarray:
 	if mode == "r":
 		return __random_selector(genes, max_val, gene_old_count)
