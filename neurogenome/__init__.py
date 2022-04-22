@@ -13,7 +13,7 @@ License: MIT
 
 **************************************
 """
-__version__ = "0.1.5"
+__version__ = "0.1.4"
 
 import neurogenome.genome as genome
 import neurogenome.builders as builders
