@@ -52,8 +52,6 @@ SETTINGS = {
 
 ## Examples
 
-_in the pipeline_
-
 [Go to all examples](https://github.com/Aiyyskhan/NeuroGenome/tree/main/examples)
 
 | Examples | Description | Remark |
