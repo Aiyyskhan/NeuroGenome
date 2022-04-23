@@ -55,11 +55,11 @@ SETTINGS = {
 [Go to all examples](https://github.com/Aiyyskhan/NeuroGenome/tree/main/examples)
 
 | Examples | Description | Remark |
-|:-|:-|:-:|
+|:-|:-|:-|
 | [Schema and settings](https://github.com/Aiyyskhan/NeuroGenome/blob/main/examples/schema_settings.py)| Example of a gene layout for weight matrix assembly | - |
 | [XOR](https://github.com/Aiyyskhan/NeuroGenome/blob/main/examples/XOR)	| Example with a standard XOR task	| - |
-| [2D Labyrinth (NumPy)](https://github.com/Aiyyskhan/NeuroGenome/blob/main/examples/2D_Labyrinth_NumPy)	| Example with 2D simulation "Labyrinth" on PyGame. Neural network computation is done with NumPy | Dependencies: pygame==2.1.2 |
-| [2D Labyrinth (PyTorch)](https://github.com/Aiyyskhan/NeuroGenome/blob/main/examples/2D_Labyrinth_PyTorch)	| Example with 2D simulation "Labyrinth" on PyGame. Neural network computation is done with PyTorch | Dependencies: pygame==2.1.2, torch==1.6.0 |
+| [2D Labyrinth (NumPy)](https://github.com/Aiyyskhan/NeuroGenome/blob/main/examples/2D_Labyrinth_NumPy)	| Example with 2D simulation "Labyrinth" on PyGame. Neural network computation is done with NumPy | Dependencies: `pygame==2.1.2` |
+| [2D Labyrinth (PyTorch)](https://github.com/Aiyyskhan/NeuroGenome/blob/main/examples/2D_Labyrinth_PyTorch)	| Example with 2D simulation "Labyrinth" on PyGame. Neural network computation is done with PyTorch | Dependencies: `pygame==2.1.2`, `torch==1.6.0` |
 
 ## License
 
